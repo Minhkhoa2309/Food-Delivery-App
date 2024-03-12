@@ -21,7 +21,7 @@ export class AuthGuard implements CanActivate {
         const accessToken = req.headers.accesstoken as string;
         const refreshToken = req.headers.refreshtoken as string;
 
-        if (!accessToken || !refreshToken) {
+        if (accessToken == 'undefined' || refreshToken == 'undefined') {
             throw new UnauthorizedException('Please login to access this resource.');
         }
 
@@ -34,7 +34,12 @@ export class AuthGuard implements CanActivate {
                 throw new UnauthorizedException('Invalid access token');
             }
 
-            await this.updateAccessToken(req);
+            const expirationTime = decoded.exp;
+
+            if (expirationTime * 1000 > Date.now()) {
+                await this.updateAccessToken(req);
+            }
+
         }
         return true;
     }
@@ -48,6 +53,15 @@ export class AuthGuard implements CanActivate {
 
             if (!decoded) {
                 throw new UnauthorizedException('Invalid access token');
+            }
+
+
+            const expirationTime = decoded.exp * 1000;
+
+            if (expirationTime < Date.now()) {
+                throw new UnauthorizedException(
+                    'Please login to access this resource!',
+                );
             }
 
             const user = await this.prisma.user.findUnique({
@@ -79,7 +93,7 @@ export class AuthGuard implements CanActivate {
             req.accesstoken = accessToken;
             req.refreshtoken = refreshToken;
             req.user = user;
-            
+
 
         } catch (error) {
             console.log(error);

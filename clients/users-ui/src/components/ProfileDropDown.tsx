@@ -1,12 +1,29 @@
 'use client'
 import { Avatar, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CgProfile } from 'react-icons/cg';
 import AuthScreen from '../views/AuthScreen';
+import useUser from '../hooks/useUser';
+import Cookies from 'js-cookie';
+import toast from 'react-hot-toast';
 
 const ProfileDropDown = () => {
     const [signedIn, setSignedIn] = useState(false);
     const [open, setOpen] = useState(false);
+    const { user, loading } = useUser();
+    console.log(user);
+    useEffect(() => {
+        if (!loading) {
+            setSignedIn(!!user);
+        }
+    }, [loading, user, open]);
+
+    const handleLogout = () => {
+        Cookies.remove('access_token');
+        Cookies.remove('refresh_token');
+        toast.success('Logout Successfully!');
+        window.location.reload();
+    }
 
     return (
         <div className='flex items-center gap-4'>
@@ -16,7 +33,7 @@ const ProfileDropDown = () => {
                         <Avatar
                             as='button'
                             className='transition-transform'
-                            src="https://i.pravatar.cc/150?u=a04258114e29026702d"
+                            src={user?.avatar?.url}
                         />
                     </DropdownTrigger>
                     <DropdownMenu aria-label='Profile Actions' variant='flat'>
@@ -25,7 +42,7 @@ const ProfileDropDown = () => {
                                 Signed in as
                             </p>
                             <p className='font-semibold'>
-                                support@fastdeli.com
+                                {user.email}
                             </p>
                         </DropdownItem>
                         <DropdownItem key='settings'>
@@ -37,7 +54,7 @@ const ProfileDropDown = () => {
                         <DropdownItem key='team_settings'>
                             Apply for seller account
                         </DropdownItem>
-                        <DropdownItem key='logout' color='danger'>
+                        <DropdownItem key='logout' color='danger' onClick={handleLogout}>
                             Logout
                         </DropdownItem>
                     </DropdownMenu>
@@ -50,7 +67,7 @@ const ProfileDropDown = () => {
             )}
             {
                 open && (
-                    <AuthScreen />
+                    <AuthScreen setOpen={setOpen} />
                 )
             }
         </div>

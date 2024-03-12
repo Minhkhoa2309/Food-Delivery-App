@@ -1,7 +1,10 @@
+import { REGISTER_USER } from '@/src/graphql/actions/register.action';
 import styles from '@/src/utils/style'
+import { useMutation } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { AiFillGithub, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { z } from 'zod'
@@ -27,10 +30,20 @@ const Signup = ({ setActiveState }: { setActiveState: (e: string) => void }) => 
     });
 
     const [show, setShow] = useState(false);
+    const [registerUserMutation, { loading, error, data }] = useMutation(REGISTER_USER);
 
-    const onSubmit = (data: SignupSchema) => {
-        console.log(data);
-        reset();
+    const onSubmit = async (data: SignupSchema) => {
+        try {
+            const response = await registerUserMutation({
+                variables: data
+            })
+            localStorage.setItem('activation_token', response.data.register.activation_token);
+            toast.success('Please check your email to activate your account!');
+            reset();
+            setActiveState('Verification');
+        } catch (error: any) {
+            toast.error(error.message)
+        }
     }
 
     return (
@@ -52,7 +65,7 @@ const Signup = ({ setActiveState }: { setActiveState: (e: string) => void }) => 
                     }
                 </div>
                 <label className={`${styles.label}`}>Enter your Phone Number</label>
-                <input {...register("phone_number")} type="number" placeholder='+8497********' className={`${styles.input}`} />
+                <input {...register("phone_number", { valueAsNumber: true })} type="number" placeholder='+8497********' className={`${styles.input}`} />
                 {
                     errors.phone_number && (
                         <span className='text-red-500 block mt-1'>
@@ -61,12 +74,12 @@ const Signup = ({ setActiveState }: { setActiveState: (e: string) => void }) => 
                     )
                 }
                 <div className='w-full mt-5 relative mb-3'>
-                    <label className={`${styles.label}`}>Enter your Name</label>
-                    <input {...register("name")} type="text" placeholder='John Doe' className={`${styles.input}`} />
+                    <label className={`${styles.label}`}>Enter your Email</label>
+                    <input {...register("email")} type="text" placeholder='JohnDoe@gmail.com' className={`${styles.input}`} />
                     {
-                        errors.name && (
+                        errors.email && (
                             <span className='text-red-500 block mt-1'>
-                                {errors.name.message}
+                                {errors.email.message}
                             </span>
                         )
                     }
@@ -79,13 +92,6 @@ const Signup = ({ setActiveState }: { setActiveState: (e: string) => void }) => 
                         placeholder='password!@%'
                         className={`${styles.input}`}
                     />
-                    {
-                        errors.password && (
-                            <span className='text-red-500 block mt-1'>
-                                {errors.password.message}
-                            </span>
-                        )
-                    }
                     {
                         !show ? (
                             <AiOutlineEyeInvisible
@@ -102,9 +108,15 @@ const Signup = ({ setActiveState }: { setActiveState: (e: string) => void }) => 
                         )
                     }
                 </div>
-                <br />
+                {
+                    errors.password && (
+                        <span className='text-red-500 block mt-1'>
+                            {errors.password.message}
+                        </span>
+                    )
+                }
                 <div className='w-full mt-5'>
-                    <input type="submit" value='Sign Up' className={`${styles.button} mt-3`} disabled={isSubmitting} />
+                    <input type="submit" value='Sign Up' className={`${styles.button} mt-3`} disabled={isSubmitting || loading} />
                 </div>
                 <h5 className='text-center pt-4 font-Poppins text-[14px] text-white'>
                     Or join with
