@@ -37,6 +37,27 @@ export class LoginDto {
     password: string;
 }
 
+
+@InputType()
+export class ForgotPasswordDto {
+    @Field()
+    @IsNotEmpty({ message: "Email is required" })
+    @IsEmail({}, { message: "Email must valid" })
+    email: string;
+
+}
+
+@InputType()
+export class ResetPasswordDto {
+    @Field()
+    @IsNotEmpty({ message: "Activation Token is required" })
+    activationToken: string;
+
+    @Field()
+    @IsNotEmpty({ message: "Password is required" })
+    @MinLength(8, { message: "Password must be at least 8 characters" })
+    password: string;
+}
 @InputType()
 export class ActivationDto {
     @Field()

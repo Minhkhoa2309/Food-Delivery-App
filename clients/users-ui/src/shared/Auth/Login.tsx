@@ -100,8 +100,13 @@ const Login = ({ setActiveState, setOpen }: { setActiveState: (e: string) => voi
           )
         }
         <div className='w-full mt-5'>
-          <span className={`${styles.label} text-[#2190ff] block text-right cursor-pointer`}>Forgot your password?</span>
-          <input type="submit" value='Login' className={`${styles.button} mt-3`} disabled={isSubmitting} />
+          <span 
+          className={`${styles.label} text-[#2190ff] block text-right cursor-pointer`}
+          onClick={() => setActiveState('Forgot-Password')}
+          >
+            Forgot your password?
+            </span>
+          <input type="submit" value='Login' className={`${styles.button} mt-3`} disabled={isSubmitting || loading} />
         </div>
         <br />
         <h5 className='text-center pt-4 font-Poppins text-[14px] text-white'>
