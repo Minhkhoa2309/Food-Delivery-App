@@ -5,10 +5,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { AiFillGithub, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { z } from 'zod'
 import Cookies from 'js-cookie'
+import { signIn } from 'next-auth/react';
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -28,7 +29,7 @@ const Login = ({ setActiveState, setOpen }: { setActiveState: (e: string) => voi
     resolver: zodResolver(formSchema)
   });
 
-  const [loginUserMutation, { loading, error, data }] = useMutation(LOGIN_USER);
+  const [loginUserMutation, { loading }] = useMutation(LOGIN_USER);
   const [show, setShow] = useState(false);
 
   const onSubmit = async (data: LoginSchema) => {
@@ -100,12 +101,12 @@ const Login = ({ setActiveState, setOpen }: { setActiveState: (e: string) => voi
           )
         }
         <div className='w-full mt-5'>
-          <span 
-          className={`${styles.label} text-[#2190ff] block text-right cursor-pointer`}
-          onClick={() => setActiveState('Forgot-Password')}
+          <span
+            className={`${styles.label} text-[#2190ff] block text-right cursor-pointer`}
+            onClick={() => setActiveState('Forgot-Password')}
           >
             Forgot your password?
-            </span>
+          </span>
           <input type="submit" value='Login' className={`${styles.button} mt-3`} disabled={isSubmitting || loading} />
         </div>
         <br />
@@ -113,8 +114,7 @@ const Login = ({ setActiveState, setOpen }: { setActiveState: (e: string) => voi
           Or join with
         </h5>
         <div className='flex items-center justify-center my-3'>
-          <FcGoogle size={30} className='cursor-pointer mr-2' />
-          <AiFillGithub size={30} className='cursor-pointer mr-2' />
+          <FcGoogle size={30} className='cursor-pointer mr-2' onClick={() => signIn()} />
         </div>
         <h5 className='text-center pt-4 font-Poppins text-[14px]'>
           Not have any account?
