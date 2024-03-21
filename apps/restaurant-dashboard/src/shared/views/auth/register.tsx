@@ -84,12 +84,12 @@ const Register = () => {
                 setValue('country', e.target.value);
               }}
             >
-              <option className="block pb-2" value="">
+              <option className="bg-black block pb-2" value="">
                 Choose your country
               </option>
               {Country &&
                 Country.getAllCountries().map((item) => (
-                  <option key={item.isoCode} value={item.isoCode}>
+                  <option className="bg-black" key={item.isoCode} value={item.isoCode}>
                     {item.name}
                   </option>
                 ))}
@@ -109,12 +109,12 @@ const Register = () => {
                 setValue('city', e.target.value);
               }}
             >
-              <option className="block pb-2" value="">
+              <option className="bg-black	block pb-2" value="">
                 Choose your city
               </option>
               {State &&
                 State.getStatesOfCountry(watch('country')).map((item) => (
-                  <option key={item.isoCode} value={item.isoCode}>
+                  <option className="bg-black" key={item.isoCode} value={item.isoCode}>
                     {item.name}
                   </option>
                 ))}
