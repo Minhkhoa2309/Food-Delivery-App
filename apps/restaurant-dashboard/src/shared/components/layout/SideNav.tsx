@@ -3,9 +3,16 @@
 import Link from "next/link"
 import { activeItem, sideBarItems } from "../../../app/configs/constants"
 import { useAtom } from "jotai"
+import { useEffect } from "react"
+import { usePathname } from "next/navigation"
 
 const SideNav = () => {
-    const [ activeRoute, setActiveRoute ] = useAtom(activeItem);
+    const [activeRoute, setActiveRoute] = useAtom(activeItem);
+    const pathname = usePathname();
+
+    useEffect(() => {
+        setActiveRoute(pathname)
+    }, [pathname, setActiveRoute])
 
     return (
         <>

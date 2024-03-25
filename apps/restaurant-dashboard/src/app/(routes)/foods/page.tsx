@@ -1,9 +1,12 @@
-import React from 'react'
+import FoodData from "../../../shared/components/data/food.data"
 
-const Analytics = () => {
+const Foods = () => {
   return (
-    <div>Analytics</div>
+    <div className='md:w-[90%] xl:w-[75%] m-auto'>
+      <h1 className='text-4xl text-center pt-5'>All Foods</h1>
+      <FoodData />
+    </div>
   )
 }
 
-export default Analytics
+export default Foods

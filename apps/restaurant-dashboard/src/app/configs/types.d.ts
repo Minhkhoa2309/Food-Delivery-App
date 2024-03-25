@@ -6,13 +6,13 @@ type SideBarItemsTypes = {
 
 type MUICircularColorType = {
   color:
-    | 'primary'
-    | 'secondary'
-    | 'error'
-    | 'info'
-    | 'success'
-    | 'warning'
-    | 'inherit';
+  | 'primary'
+  | 'secondary'
+  | 'error'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'inherit';
 };
 
 type DashboardCardType = {
@@ -35,4 +35,12 @@ type OrdersDataType = {
 
 type FoodCategoryType = {
   title: string;
+};
+
+type FoodDataType = {
+  id: string;
+  name: string;
+  price: number | string;
+  totalOrders: number;
+  created_at: Date | string;
 }

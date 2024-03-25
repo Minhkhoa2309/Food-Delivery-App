@@ -1,6 +1,6 @@
 import React from 'react'
-import OrdersData from '../../components/layout/dashboard/order.data'
 import InvoiceCharts from '../../components/charts/invoices.chart'
+import OrdersData from '../../components/data/order.data'
 
 const DashboardData = () => {
     return (
